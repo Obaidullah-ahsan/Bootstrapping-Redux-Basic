@@ -33,13 +33,15 @@ import {
 import { Textarea } from "@/components/ui/textarea";
 import { cn } from "@/lib/utils";
 import { addTask } from "@/redux/features/task/taskSlice";
-import { useAppDispatch } from "@/redux/hook";
+import { selectUser } from "@/redux/features/user/userSlice";
+import { useAppDispatch, useAppSelector } from "@/redux/hook";
 import type { ITask } from "@/type";
 import { format } from "date-fns";
 import { CalendarIcon } from "lucide-react";
 import { useForm, type FieldValues, type SubmitHandler } from "react-hook-form";
 
 export function AddTaskModals() {
+  const users = useAppSelector(selectUser);
   const form = useForm();
   const dispatch = useAppDispatch();
 
@@ -110,6 +112,30 @@ export function AddTaskModals() {
                         <SelectItem value="Low">Low</SelectItem>
                         <SelectItem value="Mediam">Medium</SelectItem>
                         <SelectItem value="High">High</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="assignedTo"
+                render={({ field }) => (
+                  <FormItem className="mb-4">
+                    <FormLabel>Assign To</FormLabel>
+                    <Select
+                      onValueChange={field.onChange}
+                      defaultValue={field.value}
+                    >
+                      <FormControl>
+                        <SelectTrigger>
+                          <SelectValue placeholder="Select a User to set" />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        {users.map((user) => (
+                          <SelectItem value={user.id}>{user.name}</SelectItem>
+                        ))}
                       </SelectContent>
                     </Select>
                   </FormItem>
