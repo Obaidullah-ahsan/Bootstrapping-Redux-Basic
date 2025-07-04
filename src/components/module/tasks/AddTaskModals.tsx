@@ -32,24 +32,36 @@ import {
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import { cn } from "@/lib/utils";
+import { useCreateTaskMutation } from "@/redux/api/baseApi";
 import { addTask } from "@/redux/features/task/taskSlice";
 import { selectUser } from "@/redux/features/user/userSlice";
 import { useAppDispatch, useAppSelector } from "@/redux/hook";
 import type { ITask } from "@/type";
 import { format } from "date-fns";
 import { CalendarIcon } from "lucide-react";
+import { useState } from "react";
 import { useForm, type FieldValues, type SubmitHandler } from "react-hook-form";
 
 export function AddTaskModals() {
+  const [open, setOpen] = useState(false);
   const users = useAppSelector(selectUser);
   const form = useForm();
   const dispatch = useAppDispatch();
+  const [createTask, { data, isLoading, isError }] = useCreateTaskMutation();
+  console.log("Data", data);
 
   const onSubmit: SubmitHandler<FieldValues> = (data) => {
-    dispatch(addTask(data as ITask));
+    const taskData = {
+      ...data,
+      isCompleted: false,
+    };
+    createTask(taskData);
+    // dispatch(addTask(data as ITask));
+    setOpen(false);
+    form.reset();
   };
   return (
-    <Dialog>
+    <Dialog open={open} onOpenChange={setOpen}>
       <form>
         <DialogTrigger asChild>
           <Button>Add Task</Button>
@@ -117,7 +129,7 @@ export function AddTaskModals() {
                   </FormItem>
                 )}
               />
-              <FormField
+              {/* <FormField
                 control={form.control}
                 name="assignedTo"
                 render={({ field }) => (
@@ -140,7 +152,7 @@ export function AddTaskModals() {
                     </Select>
                   </FormItem>
                 )}
-              />
+              /> */}
               <FormField
                 control={form.control}
                 name="dueDate"

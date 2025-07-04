@@ -46,7 +46,7 @@ const TaskCard = ({ task }: IProps) => {
         </div>
       </div>
       <p className="mt-5">
-        Assign To -{assignUser ? assignUser.name : "No One"}
+        Assign To - {assignUser ? assignUser.name : "No One"}
       </p>
       <p className="mt-5">{task.description}</p>
     </div>
